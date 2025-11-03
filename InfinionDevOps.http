@@ -1,0 +1,6 @@
+@InfinionDevOps_HostAddress = http://localhost:5167
+
+GET {{InfinionDevOps_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
