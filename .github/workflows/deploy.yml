@@ -51,6 +51,30 @@ jobs:
             --name ${{ env.AKS_CLUSTER_NAME }} \
             --overwrite-existing
 
+      - name: Create image pull secret
+        run: |
+          AZURE_CREDENTIALS='${{ secrets.AZURE_CREDENTIALS }}'
+          CLIENT_ID=$(echo $AZURE_CREDENTIALS | jq -r '.clientId')
+          CLIENT_SECRET=$(echo $AZURE_CREDENTIALS | jq -r '.clientSecret')
+
+          kubectl create secret docker-registry acr-secret \
+            --docker-server=${{ env.REGISTRY }} \
+            --docker-username=$CLIENT_ID \
+            --docker-password=$CLIENT_SECRET \
+            --docker-email=devops@infinion.com \
+            -n ${{ env.KUBE_NAMESPACE }} \
+            --dry-run=client -o yaml | kubectl apply -f - || true
+
+      - name: Apply Kubernetes manifests
+        run: |
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/service-account.yaml
+          kubectl apply -f k8s/configmap.yaml
+          kubectl apply -f k8s/resource-quota.yaml
+          kubectl apply -f k8s/network-policy.yaml
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+
       - name: Update deployment image
         run: |
           kubectl set image deployment/weather-api \
