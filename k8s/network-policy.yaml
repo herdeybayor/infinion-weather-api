@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: weather-api-policy
+  namespace: infinion
+spec:
+  podSelector:
+    matchLabels:
+      app: weather-api
+
+  policyTypes:
+    - Ingress
+    - Egress
+
+  # Ingress: Allow traffic from ingress controller only
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8080
+    # Allow traffic within same namespace (for testing)
+    - from:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 8080
+
+  # Egress: Allow DNS and external API calls
+  egress:
+    # Allow DNS queries
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: UDP
+          port: 53
+
+    # Allow HTTPS to external APIs
+    - to:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80

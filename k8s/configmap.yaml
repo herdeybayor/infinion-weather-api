@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: weather-api-config
+  namespace: infinion
+  labels:
+    app: weather-api
+data:
+  ASPNETCORE_ENVIRONMENT: "Production"
+  LOG_LEVEL: "Information"
+  ASPNETCORE_URLS: "http://+:8080"
