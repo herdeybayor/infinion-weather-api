@@ -7,9 +7,12 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: ${{ secrets.ACR_LOGIN_SERVER }}
-  IMAGE_NAME: infinion-weather-api
-  KUBE_NAMESPACE: default
+  REGISTRY: ${{ secrets.REGISTRY }}
+  IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
+  KUBE_NAMESPACE: ${{ secrets.KUBE_NAMESPACE }}
+  ACR_NAME: ${{ secrets.ACR_NAME }}
+  RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+  AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
 
 jobs:
   build:
@@ -22,16 +25,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Azure Login (OIDC)
+      - name: Azure Login
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Login to ACR
         run: |
-          az acr login --name $(echo ${{ env.REGISTRY }} | cut -d'.' -f1)
+          az acr login --name ${{ env.ACR_NAME }}
 
       - name: Build Docker image
         run: |
@@ -46,16 +47,15 @@ jobs:
       - name: Get AKS credentials
         run: |
           az aks get-credentials \
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --name dev-aks \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.AKS_CLUSTER_NAME }} \
             --overwrite-existing
 
       - name: Update deployment image
         run: |
           kubectl set image deployment/weather-api \
             weather-api=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
-            -n ${{ env.KUBE_NAMESPACE }} \
-            --record
+            -n ${{ env.KUBE_NAMESPACE }}
 
       - name: Wait for rollout
         run: |
