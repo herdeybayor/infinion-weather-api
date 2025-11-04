@@ -482,3 +482,256 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+## ============================================
+## Terraform & Infrastructure as Code
+## ============================================
+
+# Terraform files
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+!terraform.tfvars.example
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+.terraform/plugins/
+
+## ============================================
+## Kubernetes & Container Manifests
+## ============================================
+
+# kubeconfig files
+kubeconfig*
+.kube/
+kubeconfig_*
+*.kubeconfig
+
+# Kubernetes secrets (if accidentally created)
+k8s/secrets.yaml
+k8s/*-secret*.yaml
+k8s/*-credentials*.yaml
+
+# Helm
+charts/
+helm/
+*.tgz
+
+## ============================================
+## Docker & Container Registry
+## ============================================
+
+# Docker artifacts
+.docker/
+docker-compose.override.yml
+.dockerignore.backup
+
+# Container registry credentials
+.docker/config.json
+*.docker.json
+
+## ============================================
+## Azure & Cloud Credentials
+## ============================================
+
+# Azure credentials
+.azure/
+.azurerc
+azure-credentials.json
+azure_rsa
+azure_rsa.pub
+azureProfile.json
+*.publishsettings
+
+# Azure CLI files
+az_cli_session.txt
+
+# Service Principal files
+sp-credentials.json
+service-principal.json
+*-service-principal*.json
+
+# Environment variables with secrets
+.env
+.env.local
+.env.*.local
+.env.production.local
+.env.development.local
+.env.test.local
+
+## ============================================
+## GitHub & CI/CD
+## ============================================
+
+# GitHub Actions artifacts
+.github/workflows/*.log
+.github/workflows/debug.log
+
+# Workflow secrets backups (if created locally)
+.secrets/
+secrets.backup
+
+## ============================================
+## Documentation & Logs
+## ============================================
+
+# Terraform plan files
+*.tfplan
+tfplan
+tfplan.json
+
+# Deployment logs
+deployment*.log
+*.log
+terraform*.log
+
+# Generated outputs
+outputs.json
+terraform_outputs.json
+
+# Temporary documentation files
+DEPLOYMENT_GUIDE.backup.md
+DEPLOYMENT_GUIDE.*.md
+
+## ============================================
+## IDE & Editor Specific
+## ============================================
+
+# Terraform IDE plugins
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code workspace settings (can be public, but exclude user-specific)
+.vscode/settings.json.local
+.vscode/launch.json.local
+
+# Temporary files from editors
+*.swp~
+*.swo
+*~
+.#*
+
+## ============================================
+## OS & System Files
+## ============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.Xauthority
+.gtkrc*
+
+## ============================================
+## Development & Testing
+## ============================================
+
+# Node modules (if using node-based tools)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python (if using python scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+ENV/
+env/
+
+# Test coverage
+coverage/
+htmlcov/
+.coverage
+.pytest_cache/
+
+# Local testing artifacts
+test-results/
+test-reports/
+*.out
+*.pprof
+
+## ============================================
+## Build & Distribution
+## ============================================
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+## ============================================
+## Temporary & Cache Files
+## ============================================
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+
+# Cache directories
+.cache/
+.venv/
+venv/
+pip-log.txt
+
+# OS Lock files
+.lock
+*.lock
+
+## ============================================
+## Sensitive Data (Double Safety)
+## ============================================
+
+# Certificate files
+*.pem
+*.key
+*.crt
+*.cert
+!*.crt.example
+!*.key.example
+
+# SSH Keys
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+known_hosts
+*.ppk
+
+# Password files
+passwords.txt
+credentials.txt
+secrets.txt
+.secrets
+
+# API Keys
+api-keys.json
+api-keys.txt
+apikeys*.json
