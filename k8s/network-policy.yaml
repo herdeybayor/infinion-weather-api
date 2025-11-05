@@ -12,43 +12,25 @@ spec:
     - Ingress
     - Egress
 
-  # Ingress: Allow traffic from anywhere (LoadBalancer + Ingress)
+  # Ingress: Allow traffic from LoadBalancer and Ingress
   ingress:
-    # Allow from ingress controller (NGINX)
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              name: ingress-nginx
-      ports:
-        - protocol: TCP
-          port: 8080
-    # Allow from LoadBalancer (external traffic)
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              name: kube-system
-      ports:
-        - protocol: TCP
-          port: 8080
-    # Allow traffic within same namespace (for testing)
-    - from:
-        - podSelector: {}
-      ports:
+    # Allow from any source on port 8080 (LoadBalancer forwards via nodes)
+    - ports:
         - protocol: TCP
           port: 8080
 
   # Egress: Allow DNS and external API calls
   egress:
-    # Allow DNS queries
+    # Allow DNS queries to any namespace
     - to:
         - namespaceSelector: {}
       ports:
         - protocol: UDP
           port: 53
 
-    # Allow HTTPS to external APIs
+    # Allow outbound HTTPS and HTTP
     - to:
-        - podSelector: {}
+        - namespaceSelector: {}
       ports:
         - protocol: TCP
           port: 443
