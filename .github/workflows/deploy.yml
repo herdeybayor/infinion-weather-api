@@ -65,6 +65,26 @@ jobs:
             -n ${{ env.KUBE_NAMESPACE }} \
             --dry-run=client -o yaml | kubectl apply -f - || true
 
+      - name: Install NGINX Ingress Controller (if not already installed)
+        run: |
+          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+          helm repo update
+          helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx \
+            --namespace ingress-nginx \
+            --create-namespace \
+            --set controller.service.type=LoadBalancer \
+            --wait || true
+
+      - name: Install cert-manager (if not already installed)
+        run: |
+          helm repo add jetstack https://charts.jetstack.io
+          helm repo update
+          helm upgrade --install cert-manager jetstack/cert-manager \
+            --namespace cert-manager \
+            --create-namespace \
+            --set installCRDs=true \
+            --wait || true
+
       - name: Apply Kubernetes manifests
         run: |
           kubectl apply -f k8s/namespace.yaml
@@ -72,8 +92,10 @@ jobs:
           kubectl apply -f k8s/configmap.yaml
           kubectl apply -f k8s/resource-quota.yaml
           kubectl apply -f k8s/network-policy.yaml
+          kubectl apply -f k8s/cert-issuer.yaml
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/ingress.yaml
 
       - name: Update deployment image
         run: |
@@ -91,3 +113,8 @@ jobs:
         run: |
           kubectl get pods -n ${{ env.KUBE_NAMESPACE }}
           kubectl get services -n ${{ env.KUBE_NAMESPACE }}
+          kubectl get ingress -n ${{ env.KUBE_NAMESPACE }}
+          echo "NGINX Ingress Controller status:"
+          kubectl get svc -n ingress-nginx nginx-ingress-ingress-nginx-controller
+          echo "Certificate status:"
+          kubectl get certificate -n ${{ env.KUBE_NAMESPACE }} || echo "Certificate pending..."

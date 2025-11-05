@@ -6,19 +6,22 @@ metadata:
   labels:
     app: weather-api
   annotations:
-    # Using NGINX ingress controller (install separately if needed)
-    kubernetes.io/ingress.class: nginx
-    # For Azure Application Gateway, use this instead:
-    # kubernetes.io/ingress.class: azure/application-gateway
+    # NGINX ingress controller
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    # Redirect HTTP to HTTPS
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
-  # TLS configuration (optional - for production use)
-  # tls:
-  #   - hosts:
-  #       - YOUR_DOMAIN_NAME
-  #     secretName: weather-api-tls
+  ingressClassName: nginx
+
+  # TLS configuration with automatic certificate from Let's Encrypt
+  tls:
+    - hosts:
+        - infinion-weather.sherifdeenadebayo.com
+      secretName: weather-api-tls-cert
+
+  # Route rules
   rules:
-    - host: localhost
+    - host: infinion-weather.sherifdeenadebayo.com
       http:
         paths:
           - path: /
