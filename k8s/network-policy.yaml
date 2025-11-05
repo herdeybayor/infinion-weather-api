@@ -12,12 +12,21 @@ spec:
     - Ingress
     - Egress
 
-  # Ingress: Allow traffic from ingress controller only
+  # Ingress: Allow traffic from anywhere (LoadBalancer + Ingress)
   ingress:
+    # Allow from ingress controller (NGINX)
     - from:
         - namespaceSelector:
             matchLabels:
               name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8080
+    # Allow from LoadBalancer (external traffic)
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: kube-system
       ports:
         - protocol: TCP
           port: 8080
